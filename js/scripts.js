@@ -1,101 +1,69 @@
-//back-end logic
+//BACK-END LOGIC
+
+//this callback function will convert ones place, tens places, hundreds, thousands place into roman numerals.
+var onesTensHundredsThousands = function(place, oneValue, fiveValue, tenValue) {
+  if (place === 9) {
+    return oneValue + tenValue;
+  } else if (place === 8) {
+    return fiveValue + oneValue + oneValue + oneValue;
+  } else if (place === 7) {
+    return fiveValue + oneValue + oneValue;
+  } else if (place === 6) {
+    return fiveValue + oneValue;
+  } else if (place === 5) {
+    return fiveValue;
+  } else if (place === 4) {
+    return oneValue + fiveValue;
+  } else if (place === 3) {
+    return oneValue + oneValue + oneValue;
+  } else if (place === 2) {
+    return oneValue + oneValue;
+  } else if (place === 1) {
+    return oneValue;
+  } else if (place === 0) {
+    return "";
+  }
+}
+
+//this callback function will return value of ones, tens, hundreds and thousands place in an (array) such as [3, 4, 5, 7].
+// index is measured from end in reverse. eg. [3, 4, 5, 7] index of 1 = 7, index of 2 = 5
+var getValues = function(array, index) {
+  if (array[array.length - index]){
+    return array[array.length - index];
+  } else return false;
+}
+
+// this function will convert a number provided by user into Roman Numerals. Will return a string of Roman Numerals.
 var convertToRomanNumerals = function(number) {
-  var ones, tens, hundreds, thousands = undefined;
+  var ones, tens, hundreds, thousands = false;
   var numberArray = [];
   var romanArray = [""];
-  stringArray = number.toString().split("");
+  var stringArray = number.toString().split(""); //stringArray will look like this ["4","7","9"].
   stringArray.forEach(function(number){
     number = parseInt(number);
-    numberArray.push(number);
+    numberArray.push(number); //numberArry will look like this [4,7,9].
   });
-  var ones = numberArray[numberArray.length - 1];
-  if (numberArray[numberArray.length - 2]){
-    var tens = numberArray[numberArray.length - 2];
-  } else tens = false;
-  if (numberArray[numberArray.length - 3]){
-    var hundreds = numberArray[numberArray.length - 3];
-  } else hundreds = false;
-  if (numberArray[numberArray.length - 4]){
-    var thousands = numberArray[numberArray.length - 4];
-  } else thousands = false;
-  if (ones === 9) {
-    romanArray[0] = "IX";
-  } else if (ones === 8) {
-    romanArray[0] = "VIII";
-  } else if (ones === 7) {
-    romanArray[0] = "VII";
-  } else if (ones === 6) {
-    romanArray[0] = "VI";
-  } else if (ones === 5) {
-    romanArray[0] = "V";
-  } else if (ones === 4) {
-    romanArray[0] = "IV";
-  } else if (ones === 3) {
-    romanArray[0] = "III";
-  } else if (ones === 2) {
-    romanArray[0] = "II";
-  } else if (ones === 1) {
-    romanArray[0] = "I";
-  } else if (ones === 0) {
-    romanArray[0] = "";
-  }
-  if (tens === 9) {
-    romanArray[1] = "XC";
-  } else if (tens === 8) {
-    romanArray[1] = "LXXX";
-  } else if (tens === 7) {
-    romanArray[1] = "LXX";
-  } else if (tens === 6) {
-    romanArray[1] = "LX";
-  } else if (tens === 5) {
-    romanArray[1] = "L";
-  } else if (tens === 4) {
-    romanArray[1] = "XL";
-  } else if (tens === 3) {
-    romanArray[1] = "XXX";
-  } else if (tens === 2) {
-    romanArray[1] = "XX";
-  } else if (tens === 1) {
-    romanArray[1] = "X";
-  } else if (tens === 0) {
-    romanArray[1] = "";
-  }
-  if (hundreds  === 9) {
-    romanArray[2] = "CM";
-  } else if (hundreds === 8) {
-    romanArray[2] = "DCCC";
-  } else if (hundreds === 7) {
-    romanArray[2] = "DCC";
-  } else if (hundreds === 6) {
-    romanArray[2] = "DC";
-  } else if (hundreds === 5) {
-    romanArray[2] = "D";
-  } else if (hundreds === 4) {
-    romanArray[2] = "CD";
-  } else if (hundreds === 3) {
-    romanArray[2] = "CCC";
-  } else if (hundreds === 2) {
-    romanArray[2] = "CC";
-  } else if (hundreds === 1) {
-    romanArray[2] = "C";
-  } else if (hundreds === 0) {
-    romanArray[2] = "";
-  }
-  if (thousands === 3) {
-    romanArray[3] = "MMM";
-  } else if (thousands === 2) {
-    romanArray[3] = "MM";
-  } else if (thousands === 1) {
-    romanArray[3] = "MM";
-  } else if (thousands === 0) {
-    romanArray[3] = "";
-  }
+
+  //callback functions to get the numeric value of each place [thousands, hundreds, tens, ones]
+  //do not change index values. ones=1, tens=2, hundreds=3, thousands=4
+  var ones = getValues(numberArray, 1);
+  var tens = getValues(numberArray, 2);
+  var hundreds = getValues(numberArray, 3);
+  var thousands = getValues(numberArray, 4);
+
+  //callback functions to convert numeric values into roman numerals for each place [thousands, hundreds, tens, ones]
+  //do not change order (ones-tens-hundreds-thousands)
+  romanArray[0] = onesTensHundredsThousands(ones, "I", "V", "X");
+  romanArray[1] = onesTensHundredsThousands(tens, "X", "L", "C");
+  romanArray[2] = onesTensHundredsThousands(hundreds, "C", "D", "M")
+  romanArray[3] = onesTensHundredsThousands(thousands, "M", "", "")
+
   romanArray.reverse();
   romanArray = romanArray.join('');
   return romanArray;
-} //end of convertToRomanNumerals function
+}
 
-//front-end logic
+//FRONT-END LOGIC
 $(function() {
   $("form").submit(function(event) {
     event.preventDefault();
@@ -103,5 +71,5 @@ $(function() {
     var romanNumerals = convertToRomanNumerals(userInput);
     $("#romanNumerals").text(romanNumerals);
     $("#result").show();
-  }); // end of submit function
-}); //end of front end
+  });
+});
